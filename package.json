@@ -1,5 +1,17 @@
 {
+  "name": "String Analyser",
+  "version": "1.0.0",
+  "description": "Backend Wizards — Stage 0 Task: Build a Dynamic Profile Endpoint Welcome to Stage 0! :dart: In this task, you'll build a simple RESTful API endpoint that returns your profile information along with a dynamic cat fact fetched from an external API. This task validates your ability to consume third-party APIs, format JSON responses, and return dynamic data.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
   "dependencies": {
+    "axios": "^1.12.2",
     "express": "^5.1.0"
-  }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
