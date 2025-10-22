@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 
 // --- In-Memory Data Store ---
-// Stores computed string properties, keyed by the SHA-256 hash.
+// Stores computed string properties, keyed by the RAW STRING VALUE.
 const stringStore = {};
 
 // --- Utility Functions for String Analysis ---
@@ -177,28 +177,33 @@ app.post('/strings', (req, res) => {
     const analysisResult = analyzeString(trimmedValue);
 
     // 409 Conflict: String already exists
-    if (stringStore[analysisResult.id]) {
+    // HIGHLIGHT: Checking existence by value, which is now the key.
+    if (stringStore[trimmedValue]) {
         return res.status(409).json({ error: 'Conflict: This string has already been analyzed and stored.' });
     }
 
     // Store the result
-    stringStore[analysisResult.id] = analysisResult;
+    // HIGHLIGHT: Storing the result using the raw string value as the key.
+    stringStore[trimmedValue] = analysisResult;
 
     // 201 Created Response
     res.status(201).json(analysisResult);
 });
 
 // 2. Get Specific String
+// HIGHLIGHT: Route changed from :hash to :value
 app.get('/strings/:value', (req, res) => {
-    const value = req.params.value;
-    //const stringData = stringStore[value];
-    const stringData = Object.keys(stringStore).find(
-        key => stringStore[key] === value
-      );
+    // HIGHLIGHT: Using req.params.value for lookup
+    const value = req.params.value; 
+    
+    // NOTE: Express automatically decodes the URL component before reaching here.
+    
+    const stringData = stringStore[value];
 
     // 404 Not Found
+    // HIGHLIGHT: The 404 block is still correct, checking if the value exists as a key.
     if (!stringData) {
-        return res.status(404).json({ error: 'Not Found: String analysis with the provided ID does not exist.' });
+        return res.status(404).json({ error: 'Not Found: String analysis for the provided value does not exist.' });
     }
 
     // 200 OK
@@ -275,16 +280,18 @@ app.get('/strings/filter-by-natural-language', (req, res) => {
 });
 
 // 5. Delete String
+// HIGHLIGHT: Route changed from :hash to :value
 app.delete('/strings/:value', (req, res) => {
-    const value = req.params.value;
+    // HIGHLIGHT: Using req.params.value for lookup and deletion
+    const value = req.params.value; 
 
     // 404 Not Found
     if (!stringStore[value]) {
-        return res.status(404).json({ error: 'Not Found: String analysis with the provided ID does not exist.' });
+        return res.status(404).json({ error: 'Not Found: String analysis for the provided value does not exist.' });
     }
 
     // Delete from store
-    delete stringStore[hash];
+    delete stringStore[value];
 
     // 204 No Content
     res.status(204).send();
@@ -294,4 +301,5 @@ app.delete('/strings/:value', (req, res) => {
 app.listen(PORT, () => {
     console.log(`String Analysis API running on port ${PORT}`);
     console.log(`Local endpoints available at http://localhost:${PORT}`);
+    console.log("NOTE: GET and DELETE routes now use the full URL-encoded string value as the path parameter.");
 });
