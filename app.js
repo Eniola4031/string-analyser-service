@@ -65,7 +65,7 @@ function parseNaturalLanguage(query) {
     //const decodedQuery = decodeURIComponent(query); 
     const q = decodedQuery.toLowerCase();
 
-    let query;
+    // let query;
     try{
         query = decodeURIComponent(request.query.query);
       }catch{
