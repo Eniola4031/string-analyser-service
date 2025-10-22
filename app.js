@@ -190,9 +190,9 @@ app.post('/strings', (req, res) => {
 
 // 2. Get Specific String
 // NOTE: Using the SHA-256 hash (id) as the path parameter is best practice for unique identification.
-app.get('/strings/:hash', (req, res) => {
-    const hash = req.params.hash;
-    const stringData = stringStore[hash];
+app.get('/strings/:value', (req, res) => {
+    const value = req.params.value;
+    const stringData = stringStore[value];
 
     // 404 Not Found
     if (!stringData) {
@@ -273,11 +273,11 @@ app.get('/strings/filter-by-natural-language', (req, res) => {
 });
 
 // 5. Delete String
-app.delete('/strings/:hash', (req, res) => {
-    const hash = req.params.hash;
+app.delete('/strings/:value', (req, res) => {
+    const value = req.params.value;
 
     // 404 Not Found
-    if (!stringStore[hash]) {
+    if (!stringStore[value]) {
         return res.status(404).json({ error: 'Not Found: String analysis with the provided ID does not exist.' });
     }
 
