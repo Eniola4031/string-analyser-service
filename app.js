@@ -189,10 +189,12 @@ app.post('/strings', (req, res) => {
 });
 
 // 2. Get Specific String
-// NOTE: Using the SHA-256 hash (id) as the path parameter is best practice for unique identification.
 app.get('/strings/:value', (req, res) => {
     const value = req.params.value;
-    const stringData = stringStore[value];
+    //const stringData = stringStore[value];
+    const stringData = Object.keys(stringStore).find(
+        key => stringStore[key] === value
+      );
 
     // 404 Not Found
     if (!stringData) {
