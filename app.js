@@ -62,7 +62,8 @@ function analyzeString(value) {
  */
 function parseNaturalLanguage(query) {
     const filters = {};
-    const q = query.toLowerCase();
+    const decodedQuery = decodeURIComponent(query); 
+    const q = decodedQuery.toLowerCase();
 
     // Palindrome filter
     if (q.includes('palindrome') || q.includes('palindromic')) {
